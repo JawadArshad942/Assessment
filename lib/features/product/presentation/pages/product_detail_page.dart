@@ -9,9 +9,10 @@ import '../cubit/product_detail_cubit.dart';
 import '../../../../core/widgets/app_cached_image.dart';
 
 class ProductDetailPage extends StatefulWidget {
-  const ProductDetailPage({super.key, required this.id});
+  const ProductDetailPage({super.key, required this.id, this.initial});
 
   final int id;
+  final ProductDetailEntity? initial;
 
   @override
   State<ProductDetailPage> createState() => _ProductDetailPageState();
@@ -21,7 +22,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
   @override
   void initState() {
     super.initState();
-    context.read<ProductDetailCubit>().load(widget.id);
+    context.read<ProductDetailCubit>().load(widget.id, fallback: widget.initial);
   }
 
   @override

@@ -5,6 +5,7 @@ import '../../../../core/widgets/app_cached_image.dart';
 
 import '../../../cart/presentation/cubit/cart_cubit.dart';
 import '../../domain/entities/product.dart';
+import '../../domain/entities/product_detail.dart';
 import '../cubit/product_cubit.dart';
 
 class ProductListPage extends StatefulWidget {
@@ -149,7 +150,21 @@ class _ProductListPageState extends State<ProductListPage> {
                               final num price = product.price;
                               final num finalPrice = (discount != null && discount > 0) ? (price * (1 - (discount / 100))) : price;
                               return InkWell(
-                                onTap: () => context.push('/product/${product.id}', extra: product),
+                                onTap: () {
+                                  final ProductDetailEntity initial = ProductDetailEntity(
+                                    id: product.id,
+                                    title: product.title,
+                                    description: product.description,
+                                    price: product.price,
+                                    thumbnail: product.thumbnail,
+                                    images: product.images,
+                                    discountPercentage: product.discountPercentage,
+                                    rating: product.rating,
+                                    stock: product.stock,
+                                    minimumOrderQuantity: product.minimumOrderQuantity,
+                                  );
+                                  context.push('/product/${product.id}', extra: initial);
+                                },
                                 child: Card(
                                   clipBehavior: Clip.hardEdge,
                                   child: Row(
