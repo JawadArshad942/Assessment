@@ -39,10 +39,10 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
         .toList();
     // Merge with existing cache
     final List<dynamic> existing = (box.get(_productsKey) as List<dynamic>?) ?? <dynamic>[];
-    final List<Map<String, dynamic>> merged = <Map<String, dynamic>>[...existing.cast<Map<String, dynamic>>(), ...jsonList];
+    final List<Map<dynamic, dynamic>> merged = <Map<dynamic, dynamic>>[...existing.cast<Map<dynamic, dynamic>>(), ...jsonList];
     // Deduplicate by id
-    final Map<int, Map<String, dynamic>> byId = <int, Map<String, dynamic>>{};
-    for (final Map<String, dynamic> p in merged) {
+    final Map<int, Map<dynamic, dynamic>> byId = <int, Map<dynamic, dynamic>>{};
+    for (final Map<dynamic, dynamic> p in merged) {
       byId[p['id'] as int] = p;
     }
     box.put(_productsKey, byId.values.toList());

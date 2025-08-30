@@ -49,7 +49,8 @@ class ProductRepositoryImpl implements ProductRepository {
         skip: result.skip,
         limit: result.limit,
       );
-    } catch (e) {
+    } catch (e, s) {
+      print('error from getProducts from impl: $e \n $s');
       if (e is NoInternetException) rethrow;
       // Fallback to whatever cache exists
       return PaginatedProductsEntity(
