@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/widgets/app_cached_image.dart';
 
 import '../../../cart/presentation/cubit/cart_cubit.dart';
 import '../../domain/entities/product.dart';
@@ -98,22 +99,30 @@ class _ProductListPageState extends State<ProductListPage> {
                   if (state.isLoading) {
                     return const Center(child: CircularProgressIndicator());
                   }
-                  if (state.message != null) {
-                    return Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(state.message!, textAlign: TextAlign.center),
-                            const SizedBox(height: 12),
-                            FilledButton.icon(
-                              onPressed: () => context.read<ProductCubit>().load(),
-                              icon: const Icon(Icons.refresh),
-                              label: const Text('Retry'),
+
+                  // Initial offline state: show retry and pull-to-refresh if flagged by state
+                  if (state.noInternet) {
+                    return RefreshIndicator(
+                      onRefresh: () => context.read<ProductCubit>().load(),
+                      child: ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: <Widget>[
+                          Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Text('No internet connection', textAlign: TextAlign.center),
+                                const SizedBox(height: 12),
+                                FilledButton.icon(
+                                  onPressed: () => context.read<ProductCubit>().load(),
+                                  icon: const Icon(Icons.refresh),
+                                  label: const Text('Retry'),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     );
                   }
@@ -140,7 +149,7 @@ class _ProductListPageState extends State<ProductListPage> {
                               final num price = product.price;
                               final num finalPrice = (discount != null && discount > 0) ? (price * (1 - (discount / 100))) : price;
                               return InkWell(
-                                onTap: () => context.push('/product/${product.id}'),
+                                onTap: () => context.push('/product/${product.id}', extra: product),
                                 child: Card(
                                   clipBehavior: Clip.hardEdge,
                                   child: Row(
@@ -149,7 +158,7 @@ class _ProductListPageState extends State<ProductListPage> {
                                         children: [
                                           Hero(
                                             tag: 'p_${product.id}',
-                                            child: Image.network(product.thumbnail, fit: BoxFit.cover, width: 130),
+                                            child: AppCachedImage(url: product.thumbnail, fit: BoxFit.cover, width: 130),
                                           ),
                                           if (product.rating != null)
                                             Positioned(

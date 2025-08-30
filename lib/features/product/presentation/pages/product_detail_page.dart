@@ -6,6 +6,7 @@ import '../../../../injection_container.dart';
 import '../../../cart/presentation/cubit/cart_cubit.dart';
 import '../../domain/entities/product_detail.dart';
 import '../cubit/product_detail_cubit.dart';
+import '../../../../core/widgets/app_cached_image.dart';
 
 class ProductDetailPage extends StatefulWidget {
   const ProductDetailPage({super.key, required this.id});
@@ -49,7 +50,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           if (state.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          if (state.message != null) {
+          if (state.message != null && state.detail == null) {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(24),
@@ -68,6 +69,9 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
               ),
             );
           }
+          if (state.detail == null) {
+            return const Center(child: CircularProgressIndicator());
+          }
           final ProductDetailEntity d = state.detail!;
           final ThemeData theme = Theme.of(context);
           final bool lowStock = (d.stock ?? 0) > 0 && (d.stock! <= 5);
@@ -81,7 +85,7 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
                   child: Hero(
                     tag: 'p_${d.id}',
                     child: PageView(
-                      children: d.images.map((String url) => Image.network(url, fit: BoxFit.cover)).toList(),
+                      children: d.images.map((String url) => AppCachedImage(url: url, fit: BoxFit.cover)).toList(),
                     ),
                   ),
                 ),

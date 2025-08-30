@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 import 'core/network/dio_client.dart';
+import 'core/network/network_info.dart';
 import 'core/notifications/local_notifications_service.dart';
 import 'features/cart/presentation/cubit/cart_cubit.dart';
 import 'features/cart/data/datasources/cart_local_data_source.dart';
@@ -21,6 +22,7 @@ final GetIt serviceLocator = GetIt.instance;
 Future<void> setupDependencyInjection() async {
   // Core
   serviceLocator.registerLazySingleton<Dio>(() => createDioClient());
+  serviceLocator.registerLazySingleton<NetworkInfo>(() => const NetworkInfoImpl(host: 'dummyjson.com'));
   serviceLocator.registerLazySingleton<LocalNotificationsService>(
     () => LocalNotificationsService(),
   );
@@ -41,6 +43,7 @@ Future<void> setupDependencyInjection() async {
     () => ProductRepositoryImpl(
       remoteDataSource: serviceLocator<ProductRemoteDataSource>(),
       localDataSource: serviceLocator<ProductLocalDataSource>(),
+      networkInfo: serviceLocator<NetworkInfo>(),
     ),
   );
 

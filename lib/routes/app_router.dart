@@ -7,6 +7,7 @@ import '../features/cart/presentation/pages/cart_page.dart';
 import '../features/product/presentation/pages/product_list_page.dart';
 import '../features/product/presentation/pages/product_detail_page.dart';
 import '../features/product/presentation/cubit/product_detail_cubit.dart';
+import '../features/product/domain/entities/product.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(

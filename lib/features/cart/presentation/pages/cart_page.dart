@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../product/domain/entities/product.dart';
+import '../../../../core/widgets/app_cached_image.dart';
 import '../../../product/presentation/cubit/product_cubit.dart';
 import '../cubit/cart_cubit.dart';
 
@@ -64,7 +65,7 @@ class CartPage extends StatelessWidget {
                       child: Card(
                         child: Row(
                           children: <Widget>[
-                            Image.network(product.thumbnail, fit: BoxFit.cover, width: 130),
+                            AppCachedImage(url: product.thumbnail, fit: BoxFit.cover, width: 130),
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.all(12),
