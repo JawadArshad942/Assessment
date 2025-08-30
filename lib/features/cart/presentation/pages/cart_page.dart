@@ -26,12 +26,15 @@ class CartPage extends StatelessWidget {
             return const Center(child: Text('Your cart is empty'));
           }
 
-          num subtotal = 0;
+          num originalSubtotal = 0;
+          num discountedSubtotal = 0;
           for (final ProductEntity p in items) {
             final int qty = state.productIdToQuantity[p.id] ?? 0;
-            final num unit = (p.discountPercentage != null && p.discountPercentage! > 0) ? p.price * (1 - (p.discountPercentage! / 100)) : p.price;
-            subtotal += unit * qty;
+            final num discountedUnit = (p.discountPercentage != null && p.discountPercentage! > 0) ? p.price * (1 - (p.discountPercentage! / 100)) : p.price;
+            originalSubtotal += p.price * qty;
+            discountedSubtotal += discountedUnit * qty;
           }
+          final num discountAmount = (originalSubtotal - discountedSubtotal);
 
           return Column(
             children: <Widget>[
@@ -121,15 +124,25 @@ class CartPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         const Text('Subtotal'),
-                        Text('\$${subtotal.toStringAsFixed(2)}'),
+                        Text('\$${originalSubtotal.toStringAsFixed(2)}'),
                       ],
                     ),
+                    if (discountAmount > 0) ...<Widget>[
+                      const SizedBox(height: 6),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          const Text('Discount'),
+                          Text('\$${discountAmount.toStringAsFixed(2)}'),
+                        ],
+                      ),
+                    ],
                     const Divider(height: 16),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         const Text('Total', style: TextStyle(fontWeight: FontWeight.bold)),
-                        Text('\$${context.read<CartCubit>().total(all).toStringAsFixed(2)}', style: Theme.of(context).textTheme.titleMedium),
+                        Text('\$${discountedSubtotal.toStringAsFixed(2)}', style: Theme.of(context).textTheme.titleMedium),
                       ],
                     ),
                     const SizedBox(height: 8),

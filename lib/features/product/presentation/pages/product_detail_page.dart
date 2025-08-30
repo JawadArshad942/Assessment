@@ -32,8 +32,8 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
           if (state.isLoading) {
             return const SizedBox.shrink();
           }
-          if (state.message != null) {
-            return SizedBox(height: 64, child: Center(child: Text(state.message!)));
+          if (state.detail == null) {
+            return SizedBox.shrink();
           }
           return SafeArea(
             top: false,
@@ -50,89 +50,108 @@ class _ProductDetailPageState extends State<ProductDetailPage> {
             return const Center(child: CircularProgressIndicator());
           }
           if (state.message != null) {
-            return Center(child: Text(state.message!));
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Text("Failed to load product details", textAlign: TextAlign.center),
+                    const SizedBox(height: 12),
+                    FilledButton.icon(
+                      onPressed: () => context.read<ProductDetailCubit>().load(widget.id),
+                      icon: const Icon(Icons.refresh),
+                      label: const Text('Retry'),
+                    ),
+                  ],
+                ),
+              ),
+            );
           }
           final ProductDetailEntity d = state.detail!;
           final ThemeData theme = Theme.of(context);
           final bool lowStock = (d.stock ?? 0) > 0 && (d.stock! <= 5);
-          return ListView(
-            padding: const EdgeInsets.all(16),
-            children: <Widget>[
-              AspectRatio(
-                aspectRatio: 16 / 9,
-                child: Hero(
-                  tag: 'p_${d.id}',
-                  child: PageView(
-                    children: d.images.map((String url) => Image.network(url, fit: BoxFit.cover)).toList(),
+          return RefreshIndicator(
+            onRefresh: () async => context.read<ProductDetailCubit>().load(widget.id),
+            child: ListView(
+              padding: const EdgeInsets.all(16),
+              children: <Widget>[
+                AspectRatio(
+                  aspectRatio: 16 / 9,
+                  child: Hero(
+                    tag: 'p_${d.id}',
+                    child: PageView(
+                      children: d.images.map((String url) => Image.network(url, fit: BoxFit.cover)).toList(),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 12),
-              Text(d.title, style: theme.textTheme.titleLarge),
-              const SizedBox(height: 8),
-              Row(
-                children: <Widget>[
-                  Text('\$${d.price}', style: theme.textTheme.titleMedium),
-                  const SizedBox(width: 12),
-                  if (d.rating != null) Row(children: <Widget>[const Icon(Icons.star, size: 16), Text('${d.rating}')]),
-                  const Spacer(),
-                  if (d.availabilityStatus != null) Chip(label: Text(d.availabilityStatus!)),
-                ],
-              ),
-              const SizedBox(height: 8),
-              if (d.stock != null)
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    children: [
-                      Chip(
-                        label: Text('${d.stock} left'),
-                        backgroundColor: lowStock ? Colors.red.withOpacity(0.15) : Colors.green.withOpacity(0.15),
-                      ),
-                      const SizedBox(width: 8),
-                      if (state.detail!.minimumOrderQuantity != null)
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Chip(
-                            label: Text('Minimum purchase: ${state.detail!.minimumOrderQuantity}'),
-                            backgroundColor: Colors.blueGrey.withOpacity(0.12),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              const SizedBox(height: 12),
-              Text(d.description),
-              const SizedBox(height: 16),
-              if (d.brand != null)
-                Wrap(spacing: 8, runSpacing: 8, children: <Widget>[
-                  Chip(label: Text('Brand: ${d.brand}')),
-                ]),
-              const SizedBox(height: 16),
-              if (d.tags.isNotEmpty) Wrap(spacing: 6, runSpacing: 6, children: d.tags.map((String t) => Chip(label: Text(t))).toList()),
-              const SizedBox(height: 16),
-              if (d.dimensions != null) Text('Dimensions: ${d.dimensions!.width} x ${d.dimensions!.height} x ${d.dimensions!.depth}') else const SizedBox.shrink(),
-              const SizedBox(height: 8),
-              if (d.weight != null) Text('Weight: ${d.weight}'),
-              const SizedBox(height: 16),
-              if (d.warrantyInformation != null) Text('Warranty: ${d.warrantyInformation}'),
-              if (d.shippingInformation != null) Text('Shipping: ${d.shippingInformation}'),
-              if (d.returnPolicy != null) Text('Returns: ${d.returnPolicy}'),
-              const SizedBox(height: 16),
-              if (d.reviews.isNotEmpty) ...<Widget>[
-                Text('Reviews', style: theme.textTheme.titleMedium),
+                const SizedBox(height: 12),
+                Text(d.title, style: theme.textTheme.titleLarge),
                 const SizedBox(height: 8),
-                ...d.reviews.map(
-                  (ReviewEntity r) => ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: const Icon(Icons.person_outline),
-                    title: Text(r.reviewerName),
-                    subtitle: Text(r.comment),
-                    trailing: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[const Icon(Icons.star, size: 16), Text('${r.rating}')]),
-                  ),
+                Row(
+                  children: <Widget>[
+                    Text('\$${d.price}', style: theme.textTheme.titleMedium),
+                    const SizedBox(width: 12),
+                    if (d.rating != null) Row(children: <Widget>[const Icon(Icons.star, size: 16), Text('${d.rating}')]),
+                    const Spacer(),
+                    if (d.availabilityStatus != null) Chip(label: Text(d.availabilityStatus!)),
+                  ],
                 ),
+                const SizedBox(height: 8),
+                if (d.stock != null)
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        Chip(
+                          label: Text('${d.stock} left'),
+                          backgroundColor: lowStock ? Colors.red.withOpacity(0.15) : Colors.green.withOpacity(0.15),
+                        ),
+                        const SizedBox(width: 8),
+                        if (state.detail!.minimumOrderQuantity != null)
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Chip(
+                              label: Text('Minimum purchase: ${state.detail!.minimumOrderQuantity}'),
+                              backgroundColor: Colors.blueGrey.withOpacity(0.12),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                const SizedBox(height: 12),
+                Text(d.description),
+                const SizedBox(height: 16),
+                if (d.brand != null)
+                  Wrap(spacing: 8, runSpacing: 8, children: <Widget>[
+                    Chip(label: Text('Brand: ${d.brand}')),
+                  ]),
+                const SizedBox(height: 16),
+                if (d.tags.isNotEmpty) Wrap(spacing: 6, runSpacing: 6, children: d.tags.map((String t) => Chip(label: Text(t))).toList()),
+                const SizedBox(height: 16),
+                if (d.dimensions != null) Text('Dimensions: ${d.dimensions!.width} x ${d.dimensions!.height} x ${d.dimensions!.depth}') else const SizedBox.shrink(),
+                const SizedBox(height: 8),
+                if (d.weight != null) Text('Weight: ${d.weight}'),
+                const SizedBox(height: 16),
+                if (d.warrantyInformation != null) Text('Warranty: ${d.warrantyInformation}'),
+                if (d.shippingInformation != null) Text('Shipping: ${d.shippingInformation}'),
+                if (d.returnPolicy != null) Text('Returns: ${d.returnPolicy}'),
+                const SizedBox(height: 16),
+                if (d.reviews.isNotEmpty) ...<Widget>[
+                  Text('Reviews', style: theme.textTheme.titleMedium),
+                  const SizedBox(height: 8),
+                  ...d.reviews.map(
+                    (ReviewEntity r) => ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(Icons.person_outline),
+                      title: Text(r.reviewerName),
+                      subtitle: Text(r.comment),
+                      trailing: Row(mainAxisSize: MainAxisSize.min, children: <Widget>[const Icon(Icons.star, size: 16), Text('${r.rating}')]),
+                    ),
+                  ),
+                ],
               ],
-            ],
+            ),
           );
         },
       ),
