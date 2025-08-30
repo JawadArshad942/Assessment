@@ -1,6 +1,9 @@
-## Flutter Shopping Cart (Clean Architecture)
+## Assessment
 
-This app demonstrates a responsive shopping cart built with Flutter using Clean Architecture and SOLID principles.
+
+### APK
+https://drive.google.com/file/d/1AJmxt1RJDfmY1rOIwxol1cmcykbTIdMM/view?usp=sharing
+
 
 ### Tech
 - State management: flutter_bloc (Cubit)
@@ -41,15 +44,7 @@ lib/
 ```
 
 ### Setup
-1) Install Flutter SDK and run:
-```bash
-flutter pub get
-```
-
-2) Run the app:
-```bash
-flutter run
-```
+1) Install Flutter SDK 3.27.4
 
 ### Workflows (Networking, Caching, Fallback)
 
@@ -60,7 +55,8 @@ flutter run
 
 Screenshots:
 
-![Products](docs/screenshots/products.png)
+<img width="468" height="881" alt="image" src="https://github.com/user-attachments/assets/60975742-c66d-4a85-bfcc-949fc299c1a2" />
+
 
 #### Product Detail
 - Priority 1: cache-first (Hive). If the detail is cached, it is returned immediately.
@@ -69,22 +65,23 @@ Screenshots:
 
 Screenshots:
 
-![Detail Top](docs/screenshots/detail_top.png)
-![Detail Bottom](docs/screenshots/detail_bottom.png)
+<img width="468" height="881" alt="image" src="https://github.com/user-attachments/assets/bab824e4-a1d1-4127-abbb-1f792b52e894" />
+
+<img width="468" height="881" alt="image" src="https://github.com/user-attachments/assets/7c89e155-5ce4-4308-842b-9d3f7d683d85" />
+
 
 #### Cart and Pricing
 - Unit prices respect discounts; order summary shows Subtotal, Discount, and Total.
 
 Screenshot:
 
-![Cart](docs/screenshots/cart.png)
+<img width="468" height="881" alt="image" src="https://github.com/user-attachments/assets/26755a66-e437-4d77-a62d-f38b231d39e7" />
 
-### Tests
-Run unit tests:
-```bash
-flutter test
-```
+#### Local notification alert
+- If user closes the app and his cart is not empty then, alert pop-up as local notification.
 
-### Next steps / Improvements
-- Add image viewer pinch-zoom gestures on product images.
-- Add golden tests and widget tests for UI states.
+Screenshot:
+
+<img width="468" height="881" alt="image" src="https://github.com/user-attachments/assets/0bccb583-086d-40ad-94d5-eec5fa20fd01" />
+
+
