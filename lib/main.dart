@@ -19,20 +19,23 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: <BlocProvider<dynamic>>[
-        BlocProvider<ProductCubit>(create: (_) => serviceLocator<ProductCubit>()),
-        BlocProvider<CartCubit>(create: (_) => serviceLocator<CartCubit>()),
-      ],
-      child: _LifecycleWrapper(
-        child: MaterialApp.router(
-          title: 'Shopping Cart',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
-            useMaterial3: true,
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: MultiBlocProvider(
+        providers: <BlocProvider<dynamic>>[
+          BlocProvider<ProductCubit>(create: (_) => serviceLocator<ProductCubit>()),
+          BlocProvider<CartCubit>(create: (_) => serviceLocator<CartCubit>()),
+        ],
+        child: _LifecycleWrapper(
+          child: MaterialApp.router(
+            title: 'Shopping Cart',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+              useMaterial3: true,
+            ),
+            routerConfig: AppRouter.router,
           ),
-          routerConfig: AppRouter.router,
         ),
       ),
     );

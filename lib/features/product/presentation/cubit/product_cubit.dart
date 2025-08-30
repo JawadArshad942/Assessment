@@ -5,6 +5,7 @@ import '../../domain/entities/product.dart';
 import '../../domain/entities/paginated_products.dart';
 import '../../domain/usecases/get_products.dart';
 import '../../domain/usecases/search_products.dart';
+import '../../../../core/network/no_internet_exception.dart';
 
 part 'product_state.dart';
 
@@ -36,7 +37,8 @@ class ProductCubit extends Cubit<ProductState> {
       _total = page.total;
       _emitFiltered();
     } catch (e) {
-      emit(ProductState.error(message: e.toString()));
+      final bool noInternet = e is NoInternetException;
+      emit(ProductState.error(message: e.toString(), noInternet: noInternet));
     }
   }
 
@@ -49,7 +51,7 @@ class ProductCubit extends Cubit<ProductState> {
       _all = <ProductEntity>[..._all, ...page.products];
       _skip += page.products.length;
       _emitFiltered();
-    } catch (_) {
+    } catch (e) {
       _emitFiltered();
     } finally {
       _isLoadingMore = false;

@@ -7,6 +7,7 @@ class ProductState extends Equatable {
     this.message,
     this.canLoadMore = false,
     this.isLoadingMore = false,
+    this.noInternet = false,
   });
 
   const ProductState.initial() : this._();
@@ -16,14 +17,15 @@ class ProductState extends Equatable {
     bool canLoadMore = false,
     bool isLoadingMore = false,
   }) : this._(products: products, canLoadMore: canLoadMore, isLoadingMore: isLoadingMore);
-  const ProductState.error({required String message}) : this._(message: message);
+  const ProductState.error({required String message, bool noInternet = false}) : this._(message: message, noInternet: noInternet);
 
   final List<ProductEntity> products;
   final bool isLoading;
   final String? message;
   final bool canLoadMore;
   final bool isLoadingMore;
+  final bool noInternet;
 
   @override
-  List<Object?> get props => <Object?>[products, isLoading, message, canLoadMore, isLoadingMore];
+  List<Object?> get props => <Object?>[products, isLoading, message, canLoadMore, isLoadingMore, noInternet];
 }
