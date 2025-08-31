@@ -22,7 +22,7 @@ final GetIt serviceLocator = GetIt.instance;
 Future<void> setupDependencyInjection() async {
   // Core
   serviceLocator.registerLazySingleton<Dio>(() => createDioClient());
-  serviceLocator.registerLazySingleton<NetworkInfo>(() => const NetworkInfoImpl(host: 'dummyjson.com'));
+  serviceLocator.registerLazySingleton<NetworkInfo>(() => const NetworkInfoImpl());
   serviceLocator.registerLazySingleton<LocalNotificationsService>(
     () => LocalNotificationsService(),
   );
