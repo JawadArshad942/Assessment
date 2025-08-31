@@ -1,10 +1,6 @@
 ## Assessment
 
 
-### APK
-https://drive.google.com/file/d/1AJmxt1RJDfmY1rOIwxol1cmcykbTIdMM/view?usp=sharing
-
-
 ### Tech
 - State management: flutter_bloc (Cubit)
 - Routing: go_router
